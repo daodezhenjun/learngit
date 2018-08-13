@@ -1,0 +1,51 @@
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+from OptionBase.DBConnect import OracleConn
+
+
+if __name__ == '__main__':
+
+    # config
+    conn = OracleConn("user_k", "zzdcdczzcsyx", "140.206.101.54:8521", "marketdb")
+    print "go"
+    conn.get_conn()
+    if conn.c is not None:
+        try:
+            f = open('./rb.txt', 'a+')
+            try:  # use cursor
+                x = conn.execute_query("select t.* from temp_i_qe t inner join user_k.temp2 t2 on "
+                                   "t.tradingday=t2.tradingday and "
+                                   "t.instrumentid=t2.instrumentid where t.tradingday between "
+                                   "to_date(\'2017-10-01\',\'YYYY-MM-DD\') and to_date(\'2018-01-08\',\'YYYY-MM-DD\') "
+                                   "order by t.localday")
+                results = x.fetchall()
+                count = 0
+                allTemp = ""
+                for row in results:
+                    temp = ""
+                    for ss in row:
+                        """
+                        if type(ss) == datetime.datetime:
+                            temp += ss.strftime("%Y-%m-%d %H:%M:%S") + ","
+                        else:
+                            temp += str(ss) + ","
+                        """
+                        temp += str(ss) + ","
+                    temp = temp[0:len(temp) - 1] + "\n"
+                    count += 1
+                    allTemp += temp
+                    if count % 10000 == 0:
+                        f.write(allTemp)
+                        allTemp = ""
+                f.write(allTemp)
+                print count, " records have written."
+            except Exception, e1:
+                print "OptRiskWindow _update_pos_from_db select position error:", Exception, e1
+                conn.close_conn()
+                exit(0)
+        except Exception, e:
+            print "open file error."
+            exit(0)
+        finally:
+            print "will close"
+            f.close()
