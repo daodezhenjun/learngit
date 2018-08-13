@@ -1,2 +1,6 @@
 file1
+<<<<<<< HEAD
 add by dev
+=======
+add by issue
+>>>>>>> issue

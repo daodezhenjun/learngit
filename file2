@@ -1,2 +1,6 @@
 file2
+<<<<<<< HEAD
 add by dev no commit yes
+=======
+add by issue
+>>>>>>> issue
